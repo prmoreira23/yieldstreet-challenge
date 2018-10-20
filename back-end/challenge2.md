@@ -22,7 +22,7 @@ public interface StuffRepository {
     /**
      * Looks for existing stuff matching the given payload and returns the
      * existing stuff id.
-     * 
+     *
      * @param payload the stuff payload.
      * @return a completion stage for an optional with the stuff id. It's
      *         completed with an empty optional if no stuff is found.
@@ -32,7 +32,7 @@ public interface StuffRepository {
     /**
      * Creates new stuff with the given payload and returns the id for the
      * newly created stuff.
-     * 
+     *
      * @param payload the stuff payload.
      * @return a completion stage for the newly created stuff id.
      */
@@ -41,13 +41,14 @@ public interface StuffRepository {
     /**
      * Finds existing stuff matching the given payload, or creates the stuff
      * if it's not found.
-     * 
+     *
      * @param payload the stuff payload.
      * @return a completion stage with the id for the existing or newly created stuff.
      */
-    default CompletionStage<String> findOrCreateStuff(Stuff payload) {
-        // return ???
-    }
+     default CompletionStage<String> findOrCreateStuff(Stuff payload) {
+         return this.findStuff(payload).thenApply(result -> result ? result : createStuff(payload))
+     }
+
 }
 ```
 
@@ -89,7 +90,9 @@ public class AsyncStuffRepository {
      * @return a completion stage for the stuff.
      */
     public CompletionStage<Stuff> findById(String id) {
-        // provide your implementation here
+      return CompletableFuture.runAsync(() -> {
+          return this.blockingRepository.findById(id);
+      });
     }
 }
 ```

@@ -26,3 +26,9 @@ public class StuffService {
 ```
 
 What's wrong with the `defaultInstance()` implementation? How would you fix it?
+
+
+The class is not a Singleton class. You can easily instantiate several instances of StuffService.
+The dependencies are set using the constructor, when one calls the *defaultInstance()* method, they are not passing
+the dependencies, but some blank newly instantiated *Object* instances.
+The dependencies are not being passed to the singleton instance, one way to solve it is by creating setters for all your dependencies, so if one of them is missing you could just set it by passing an instance of that dependency.
